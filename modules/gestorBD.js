@@ -6,29 +6,19 @@ module.exports = {
         this.app = app;
     },
     insertarUsuario: function (usuario, funcionCallback) {
-        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
             if (err) {
                 funcionCallback(null);
             } else {
                 var collection = db.collection('usuarios');
-                collection.find({"email": usuario.email}, funcionCallback, function (err, result) {
+                collection.insertOne(usuario, function(err, result) {
                     if (err) {
                         funcionCallback(null);
+                    } else {
+                        funcionCallback(result.ops[0]._id);
                     }
-                    else if (result.count != 0) {
-                        funcionCallback(-1);
-                    }
-                    else {
-                        collection.insertOne(usuario, funcionCallback, function (err, result) {
-                            if (err) {
-                                funcionCallback(null);
-                            } else {
-                                funcionCallback(result.ops[0]._id);
-                            }
-                            db.close();
-                        });
-                    }
-                })
+                    db.close();
+                });
             }
         });
     },

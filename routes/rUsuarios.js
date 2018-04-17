@@ -6,27 +6,34 @@ module.exports = function (app, swig, gestorBD) {
     });
 
     app.post('/usuario', function (req, res) {
-        if (req.body.password == req.body.rePassword) {
-            var seguro = app.get("crypto").createHmac('sha256', app.get('clave'))
-                .update(req.body.password).digest('hex');
-            var usuario = {
-                email: req.body.email,
-                name: req.body.name,
-                password: seguro
+        var criterio = {
+            $or: [
+                {email: req.body.email}
+            ]
+        }
+        gestorBD.obtenerUsuarios(criterio, function (usuarios) {
+            if (req.body.password != req.body.rePassword) {
+                res.redirect("/signup?mensaje=Error al registrar usuario, las contraseñas no coinciden.&tipoError=pass");
             }
-            gestorBD.insertarUsuario(usuario, function (id) {
-                if (id == null) {
-                    res.redirect("/signup?mensaje=Error al registrar usuario.");
-                } else if (id == -1) {
-                    res.redirect("/signup?mensaje=Error al registrar usuario, el email ya esta registrado en la aplicacion.");
-                } else {
-                    res.redirect("/login?mensaje=Nuevo usuario registrado.");
+            else if (!(usuarios == null || usuarios == undefined || usuarios.length == 0)) {
+                res.redirect("/signup?mensaje=Error al registrar usuario, el email ya esta registrado en la aplicacion.&tipoMensaje=alert-danger&tipoError=Repetido");
+            } else {
+                var seguro = app.get("crypto").createHmac('sha256', app.get('clave'))
+                    .update(req.body.password).digest('hex');
+                var usuario = {
+                    "name": req.body.name,
+                    "email": req.body.email,
+                    "password": seguro
                 }
-            });
-        }
-        else {
-            res.redirect("/signup?mensaje=Error al registrar usuario, las contraseñas no coinciden.");
-        }
+                gestorBD.insertarUsuario(usuario, function (id) {
+                    if (id == null) {
+                        res.redirect("/signup?mensaje=Error al registrar usuario.&tipoMensaje=alert-danger");
+                    } else {
+                        res.redirect("/login?mensaje=Nuevo usuario registrado.");
+                    }
+                })
+            }
+        })
     });
 
     app.get("/login", function (req, res) {
