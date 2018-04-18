@@ -34,7 +34,8 @@ require("./routes/rUsuarios.js")(app, swig, gestorBD);
 require("./routes/rPublicaciones.js")(app, swig, gestorBD);
 
 app.get('/', function (req, res) {
-    res.redirect('/redSocial');
+    var respuesta = swig.renderFile('views/bRedSocial.html', {});
+    res.send(respuesta);
 });
 
 //Controlar error
