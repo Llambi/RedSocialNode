@@ -31,7 +31,7 @@
                 <li id="musuarios"><a href="/usuarios">Lista de Usuarios</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                {% if not session.usuario %}
+                {% if not req.session.usuario %}
                 <li><a href="/signup"><span class="glyphicon glyphicon-user"></span> Registrate</a></li>
                 <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Identifícate</a></li>
                 {% else %}

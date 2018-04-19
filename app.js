@@ -2,13 +2,22 @@
 var express = require('express');
 var app = express();
 
-// Paquete necesarios para la api -----
-var jwt = require('jsonwebtoken');
-app.set('jwt',jwt);
-
-var fs = require('fs');
-var https = require('https');
+// ZONA API ---------------------------
+// var jwt = require('jsonwebtoken');
+// app.set('jwt',jwt);
+//
+// var fs = require('fs');
+// var https = require('https');
 // ------------------------------------
+
+// ZONA SESION/ROUTERS ----------------
+
+var expressSession = require('express-session');
+app.use(expressSession({
+    secret: 'abcdefg',
+    resave: true,
+    saveUninitialized: true
+}));
 
 //routerUsuarioSession
 var routerUsuarioSession = express.Router();
@@ -25,12 +34,7 @@ routerUsuarioSession.use(function(req, res, next) {
 //Aplicar routerUsuarioSession
 app.use("/usuarios", routerUsuarioSession);
 
-var expressSession = require('express-session');
-app.use(expressSession({
-    secret: 'abcdefg',
-    resave: true,
-    saveUninitialized: true
-}));
+//-------------------------------------
 
 var crypto = require('crypto');
 var mongo = require('mongodb');
