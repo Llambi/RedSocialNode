@@ -6,12 +6,12 @@ module.exports = {
         this.app = app;
     },
     insertarUsuario: function (usuario, funcionCallback) {
-        this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
             if (err) {
                 funcionCallback(null);
             } else {
                 var collection = db.collection('usuarios');
-                collection.insertOne(usuario, function(err, result) {
+                collection.insertOne(usuario, function (err, result) {
                     if (err) {
                         funcionCallback(null);
                     } else {
@@ -58,5 +58,21 @@ module.exports = {
                 });
             }
         });
+    },
+    obtenerAmigos: function (criterio, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get("db"), function (err, db) {
+            if (err){
+                funcionCallback(null);
+            } else {
+                var collection = db.collection("amistad");
+                collection.find(criterio).toArray(function (err, amigos) {
+                    if (err){
+                        funcionCallback(null);
+                    } else {
+                        funcionCallback(amigos);
+                    }
+                })
+            }
+        })
     },
 };

@@ -14,9 +14,9 @@ module.exports = function (app, gestorBD) {
                 })
             } else {
                 var token = app.get('jwt').sign({
-                        usuario: criterio.email,
-                        time: Date.now() / 1000
-                    },"secreto");
+                    usuario: criterio.email,
+                    time: Date.now() / 1000
+                }, "secreto");
                 res.status(200);
                 res.json({
                     autenticado: true,
@@ -28,15 +28,34 @@ module.exports = function (app, gestorBD) {
     });
 
     app.get("/api/usuarios", function (req, res) {
-        gestorBD.obtenerUsuarios({}, function (usuarios) {
-            if (usuarios == null) {
+        var decoded = this.app.get("jwt").verify(token, 'secreto');
+        var usuario = decoded.email;
+        var criterio = {
+            $or: [
+                {
+                    sender: usuario,
+                    reciver: usuario
+                }
+            ]
+        };
+        gestorBD.obtenerAmigos(criterio, function (amigos) {
+            if (amigos == null) {
                 res.status(500);
                 res.json({
                     error: "se ha producido un error"
                 })
             } else {
                 res.status(200);
-                res.send(JSON.stringify(usuarios));
+                var usuarios = [];
+                for (var key in amigos){
+                    if (amigos[key].sender==usuario){
+                        usuarios.push({email: amigos[key].reciver});
+                    } else {
+                        usuarios.push({email: amigos[key].sender});
+                    }
+                }
+                amigos = JSON.stringify(usuarios);
+                res.send(amigos);
             }
         });
     });
