@@ -56,7 +56,7 @@ module.exports = function (app, swig, gestorBD) {
                     "&tipoMensaje=alert-danger ");
 
             } else {
-                req.session.usuario = usuarios[0].email;
+                req.session.usuario = {name:usuarios[0].name, email:usuarios[0].email};
                 res.redirect("/usuarios");
             }
         });
@@ -64,7 +64,7 @@ module.exports = function (app, swig, gestorBD) {
 
     app.get('/logout', function (req, res) {
         req.session.usuario = null;
-        res.redirect("/redsocial" +
+        res.redirect("/" +
             "?mensaje=Desconectado correctamente" +
             "&tipoMensaje=alert-success ");
     });
@@ -91,11 +91,11 @@ module.exports = function (app, swig, gestorBD) {
 
                 var pgUltima = Math.ceil(total / 4);
                 var respuesta = swig.renderFile('views/bUsuarios.html', {
+                    usuario: req.session.usuario,
                     usuarios: usuarios,
                     pgActual: pg,
                     pgUltima: pgUltima
                 });
-                console.log(respuesta.usuarios);
                 res.send(respuesta);
             }
         });
