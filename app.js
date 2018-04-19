@@ -2,6 +2,29 @@
 var express = require('express');
 var app = express();
 
+// Paquete necesarios para la api -----
+var jwt = require('jsonwebtoken');
+app.set('jwt',jwt);
+
+var fs = require('fs');
+var https = require('https');
+// ------------------------------------
+
+//routerUsuarioSession
+var routerUsuarioSession = express.Router();
+routerUsuarioSession.use(function(req, res, next) {
+    // console.log("routerUsuarioSession");
+    if (req.session.usuario) {
+        // dejamos correr la petición
+        next();
+    } else {
+        console.log("va a : " + req.session.destino)
+        res.redirect("/login");
+    }
+});
+//Aplicar routerUsuarioSession
+app.use("/usuarios", routerUsuarioSession);
+
 var expressSession = require('express-session');
 app.use(expressSession({
     secret: 'abcdefg',
