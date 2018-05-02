@@ -53,7 +53,8 @@ app.use(express.static("public"));
 
 //Variables
 app.set("port", 8081);
-app.set("db", "mongodb://uo250708:EIISDI2018$@ds247499.mlab.com:47499/redsocial");
+//app.set("db", "mongodb://uo250708:EIISDI2018$@ds247499.mlab.com:47499/redsocial");
+app.set('db', 'mongodb://localhost:27017/redsocial');   // Para trabajar desde la uni que tienen capados los puertos
 app.set("clave", "abcdefg");
 app.set("crypto", crypto);
 

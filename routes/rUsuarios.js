@@ -91,7 +91,7 @@ module.exports = function (app, swig, gestorBD) {
 
                 var pgUltima = Math.ceil(total / 4);
                 var respuesta = swig.renderFile('views/bUsuarios.html', {
-                    usuario: req.session.usuario,
+                    usuarioLogueado: req.session.usuario,
                     usuarios: usuarios,
                     pgActual: pg,
                     pgUltima: pgUltima

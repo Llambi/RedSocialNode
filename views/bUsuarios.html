@@ -17,11 +17,12 @@
 </div>
 
 <h2>Usuarios</h2>
-<p>{{usuario.name}}</p>
+<p>{{usuarioLogueado.name}}</p>
 <div class="row">
     <!-- http://librosweb.es/libro/bootstrap_3/capitulo_2/tipos_de_rejillas.html -->
     <!-- Inicio del Bloque canción -->
     {% for usuario in usuarios %}
+    {% if usuarioLogueado.name != usuario.name && usuarioLogueado.email != usuario.email %}
     <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
         <div style="width: 300px; padding: 20px">
             <!-- http://www.socicon.com/generator.php -->
@@ -30,6 +31,7 @@
             <div class="small">Email: {{ usuario.email }}</div>
         </div>
     </div>
+    {% endif %}
     {% endfor %}
     <!-- Fin del Bloque canción -->
 </div>
