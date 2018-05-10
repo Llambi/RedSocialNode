@@ -16,7 +16,7 @@ module.exports = function (app, gestorBD) {
                 var token = app.get('jwt').sign({
                     usuario: criterio.email,
                     time: Date.now() / 1000
-                }, "secreto");
+                }, 'secreto');
                 res.status(200);
                 res.json({
                     autenticado: true,
@@ -28,7 +28,7 @@ module.exports = function (app, gestorBD) {
     });
 
     app.get("/api/usuarios", function (req, res) {
-        var decoded = this.app.get("jwt").verify(token, 'secreto');
+        var decoded = app.get("jwt").verify(req.headers['token'], 'secreto');
         var usuario = decoded.email;
         var criterio = {
             $and: [
