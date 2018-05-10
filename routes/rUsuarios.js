@@ -79,7 +79,7 @@ module.exports = function (app, swig, gestorBD) {
                     email: {$regex: ".*" + busqueda + ".*"}
                 }
             ]
-        }
+        };
         var pg = parseInt(req.query.pg); // Es String !!!
         if (req.query.pg == null) { // Puede no venir el param
             pg = 1;
