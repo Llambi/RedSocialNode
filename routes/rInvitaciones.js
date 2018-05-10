@@ -68,4 +68,47 @@ module.exports = function (app, swig, gestorBD) {
             }
         })
     });
+    app.get("/friends", function (req, res) {
+        var pg = parseInt(req.query.pg); // Es String !!!
+        if (req.query.pg == null) { // Puede no venir el param
+            pg = 1;
+        }
+        var usuarioSesion = req.session.usuario.email;
+        var criterio = {
+            $or: [
+                {$and: [{sender: usuarioSesion}, {status: true}]},
+                {$and: [{receiver: usuarioSesion}, {status: true}]}
+            ]
+        };
+        gestorBD.getInvitationsListPg(criterio, pg, function (resultado, total) {
+            if (resultado == null) {
+                res.redirect("/invitations?mensaje=Fatal Error: listar amistades&tipoMensaje=alert-danger");
+            } else {
+                var friends = [];
+                var friendship;
+                for (i = 0; i < resultado.length; i++) {
+                    var friendData = {name: "", email: ""};
+                    friendship = resultado[i];
+                    if (friendship.sender == usuarioSesion) {
+                        friendData.name = friendship.receiverName;
+                        friendData.email = friendship.receiver;
+                        friends.push(friendData);
+                    }
+                    else {
+                        friendData.name = friendship.senderName;
+                        friendData.email = friendship.sender;
+                        friends.push(friendData);
+                    }
+                }
+                var pgUltima = Math.ceil(total / 5);
+                var respuesta = swig.renderFile('views/bFriends.html', {
+                    usuario: req.session.usuario,
+                    friendships: friends,
+                    pgActual: pg,
+                    pgUltima: pgUltima
+                });
+                res.send(respuesta);
+            }
+        });
+    });
 }

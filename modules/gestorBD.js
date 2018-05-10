@@ -111,10 +111,10 @@ module.exports = {
                 funcionCallback(null);
             } else {
                 var collection = db.collection('amistades');
-                collection.update(criterio, {$set: amistad}, function(err, result){
-                    if(err){
+                collection.update(criterio, {$set: amistad}, function (err, result) {
+                    if (err) {
                         funcionCallback(null);
-                    }else{
+                    } else {
                         funcionCallback(result);
                     }
                     db.close();
