@@ -5,20 +5,48 @@ module.exports = {
         this.mongo = mongo;
         this.app = app;
     },
-    insertarUsuario: function (usuario, funcionCallback) {
+    borrarBBDD: function (funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
             if (err) {
-                console.log("[ERROR]: Fallo en insercion de usuario.", err);
                 funcionCallback(null);
             } else {
-                var collection = db.collection('usuarios');
-                collection.insertOne(usuario, function (err, result) {
+                var collectionA = db.collection('amistades');
+                collectionA.deleteMany({}, function (err, result) {
                     if (err) {
-                        console.log("[ERROR]: Fallo en insercion de usuario.", err);
                         funcionCallback(null);
                     } else {
-                        console.log("[INFO]: Insercion de usuario.");
-                        funcionCallback(result.ops[0]._id);
+                        var collectionU = db.collection('usuarios');
+                        collectionU.deleteMany({}, function (err, result) {
+                            if (err) {
+                                funcionCallback(null);
+                            } else {
+                                funcionCallback(result);
+                            }
+                        });
+                    }
+                    db.close();
+                });
+            }
+        });
+    },
+    rellenarBBDD: function (usuarios, invitaciones, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                var collectionU = db.collection('usuarios');
+                collectionU.insertMany(usuarios, function (err, result) {
+                    if (err) {
+                        funcionCallback(null);
+                    } else {
+                        var collectionA = db.collection('amistades');
+                        collectionA.insertMany(invitaciones, function (err, result) {
+                            if (err) {
+                                funcionCallback(null);
+                            } else {
+                                funcionCallback(result);
+                            }
+                        });
                     }
                     db.close();
                 });

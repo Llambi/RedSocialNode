@@ -113,6 +113,7 @@ app.set("crypto", crypto);
 require("./routes/rUsuarios.js")(app, swig, gestorBD);
 require("./routes/rInvitaciones.js")(app, swig, gestorBD);
 require("./routes/rPublicaciones.js")(app, swig, gestorBD);
+require("./routes/rDatosPrueba.js")(app, swig, gestorBD);
 require("./routes/rAPI.js")(app, gestorBD);
 
 app.get('/', function (req, res) {
