@@ -64,11 +64,11 @@ app.use("/usuarios", routerUsuarioSession);
 var routerUsuarioToken = express.Router();
 routerUsuarioToken.use(function(req, res, next) {
     // obtener el token, puede ser un parámetro GET , POST o HEADER
-    var token = req.body.token || req.query.token || req.headers['token'];
+    var token = req.headers['token'];
     if (token != null) {
         // verificar el token
         jwt.verify(token, 'secreto', function(err, infoToken) {
-            if (err || (Date.now()/1000 - infoToken.tiempo) > 240 ){
+            if (err || (Date.now()/1000 - infoToken.tiempo) > 24000 ){
                 res.status(403); // Forbidden
                 res.json({
                     acceso : false,
