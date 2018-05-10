@@ -46,7 +46,7 @@ module.exports = {
             } else {
                 var collection = db.collection('usuarios');
                 collection.count(function (err, count) {
-                    collection.find(criterio).skip((pg - 1) * 4).limit(4)
+                    collection.find(criterio).skip((pg - 1) * 5).limit(5)
                         .toArray(function (err, usuarios) {
                             if (err) {
                                 funcionCallback(null);
@@ -81,6 +81,26 @@ module.exports = {
                             })
                         }
                     }
+                });
+            }
+        });
+    },
+    getInvitationsListPg: function (criterio, pg, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                var collection = db.collection('amistades');
+                collection.count(function (err, count) {
+                    collection.find(criterio).skip((pg - 1) * 5).limit(5)
+                        .toArray(function (err, res) {
+                            if (err) {
+                                funcionCallback(null);
+                            } else {
+                                funcionCallback(res, count);
+                            }
+                            db.close();
+                        });
                 });
             }
         });

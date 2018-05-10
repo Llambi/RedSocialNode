@@ -1,8 +1,10 @@
 module.exports = function (app, swig, gestorBD) {
-    app.get('/sendInvitation/:email', function (req, res) {
+    app.get('/sendInvitation', function (req, res) {
         var invitation = {
             sender: req.session.usuario.email,
-            receiver: req.params.email,
+            senderName: req.session.usuario.name,
+            receiver: req.query.email,
+            receiverName: req.query.name,
             status: false
         };
         var criterio = {        // Se podria hacer si los estados, pero lo muestro para que se vea mejor
@@ -27,4 +29,29 @@ module.exports = function (app, swig, gestorBD) {
             }
         });
     });
+    app.get("/invitations", function (req, res) {
+            var pg = parseInt(req.query.pg); // Es String !!!
+            if (req.query.pg == null) { // Puede no venir el param
+                pg = 1;
+            }
+            var criterio = {
+                receiver: req.session.usuario.email,
+                status: false
+            }
+            gestorBD.getInvitationsListPg(criterio, pg, function (invitations, total) {
+                if (invitations == null) {
+                    res.send("Error al listar ");
+                } else {
+                    var pgUltima = Math.ceil(total / 5);
+                    var respuesta = swig.renderFile('views/bInvitations.html', {
+                        usuario: req.session.usuario,
+                        invitations: invitations,
+                        pgActual: pg,
+                        pgUltima: pgUltima
+                    });
+                    res.send(respuesta);
+                }
+            });
+        }
+    );
 }

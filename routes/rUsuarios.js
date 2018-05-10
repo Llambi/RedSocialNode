@@ -89,7 +89,7 @@ module.exports = function (app, swig, gestorBD) {
                 res.send("Error al listar ");
             } else {
 
-                var pgUltima = Math.ceil(total / 4);
+                var pgUltima = Math.ceil(total / 5);
                 var respuesta = swig.renderFile('views/bUsuarios.html', {
                     usuario: req.session.usuario,
                     usuarios: usuarios,
