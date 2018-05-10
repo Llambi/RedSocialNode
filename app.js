@@ -59,6 +59,7 @@ app.set("clave", "abcdefg");
 app.set("crypto", crypto);
 
 require("./routes/rUsuarios.js")(app, swig, gestorBD);
+require("./routes/rInvitaciones.js")(app, swig, gestorBD);
 require("./routes/rPublicaciones.js")(app, swig, gestorBD);
 
 app.get('/', function (req, res) {

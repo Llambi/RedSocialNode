@@ -6,12 +6,12 @@ module.exports = {
         this.app = app;
     },
     insertarUsuario: function (usuario, funcionCallback) {
-        this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
             if (err) {
                 funcionCallback(null);
             } else {
                 var collection = db.collection('usuarios');
-                collection.insertOne(usuario, function(err, result) {
+                collection.insertOne(usuario, function (err, result) {
                     if (err) {
                         funcionCallback(null);
                     } else {
@@ -55,6 +55,32 @@ module.exports = {
                             }
                             db.close();
                         });
+                });
+            }
+        });
+    },
+    sendInvitation: function (invitation, criterio, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
+            if (err) {
+                funcionCallback("Error");
+            } else {
+                var collection = db.collection('amistades');
+                collection.find(criterio).toArray(function (err, res) {
+                    if (err) {
+                        funcionCallback("Error");
+                    } else {
+                        if (res.length > 0) {
+                            funcionCallback("Stop");
+                        } else {
+                            collection.insertOne(invitation, function (err, result) {
+                                if (err) {
+                                    funcionCallback("Error");
+                                } else {
+                                    funcionCallback("Created");
+                                }
+                            })
+                        }
+                    }
                 });
             }
         });
