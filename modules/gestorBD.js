@@ -105,4 +105,22 @@ module.exports = {
             }
         });
     },
+    acceptInvitation: function (criterio, amistad, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                var collection = db.collection('amistades');
+                collection.update(criterio, {$set: amistad}, function(err, result){
+                    if(err){
+                        funcionCallback(null);
+                    }else{
+                        funcionCallback(result);
+                    }
+                    db.close();
+                });
+            }
+        });
+    },
+
 };

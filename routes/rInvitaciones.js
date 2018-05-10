@@ -15,16 +15,19 @@ module.exports = function (app, swig, gestorBD) {
                 {$and: [{sender: invitation.receiver}, {receiver: invitation.sender}, {status: true}]}    // Ya son amigos
             ]
         };
-        gestorBD.sendInvitation(invitation, criterio, function (resultado) {
-            switch (resultado) {
+        gestorBD.sendInvitation(invitation, criterio, function (result) {
+            switch (result) {
                 case "Created":
                     res.redirect("/usuarios?mensaje=Invitacion enviada&tipoMensaje=alert-success");
                     break;
                 case "Stop":
-                    res.redirect("/usuarios?mensaje=Invitacion cancelada: compruebe su lista de invitaciones y amistades&tipoMensaje=alert-warning");
+                    res.redirect("/usuarios?mensaje=Invitacion cancelada: ya ha sido enviada previamente, " +
+                        "ya es amigo de este usuario o " +
+                        "este usuario le ha enviado una invitacion previamente" +
+                        "&tipoMensaje=alert-warning");
                     break;
                 default:
-                    res.redirect("/usuarios?mensaje=Fatal Error: intentar enviar invitacion&tipoMensaje=alert-danger");
+                    res.redirect("/usuarios?mensaje=Fatal Error: enviar invitacion&tipoMensaje=alert-danger");
                     break;
             }
         });
@@ -40,7 +43,7 @@ module.exports = function (app, swig, gestorBD) {
             }
             gestorBD.getInvitationsListPg(criterio, pg, function (invitations, total) {
                 if (invitations == null) {
-                    res.send("Error al listar ");
+                    res.redirect("/invitations?mensaje=Fatal Error: listar invitaciones&tipoMensaje=alert-danger");
                 } else {
                     var pgUltima = Math.ceil(total / 5);
                     var respuesta = swig.renderFile('views/bInvitations.html', {
@@ -54,4 +57,15 @@ module.exports = function (app, swig, gestorBD) {
             });
         }
     );
+    app.get('/acceptInvitation/:id', function (req, res) {
+        var criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
+        var amistad = {status: true};
+        gestorBD.acceptInvitation(criterio, amistad, function (result) {
+            if (result == null) {
+                res.redirect("/invitations?mensaje=Fatal Error: aceptar invitacion&tipoMensaje=alert-danger");
+            } else {
+                res.redirect("/invitations?mensaje=Peticion de amistad aceptada&tipoMensaje=alert-success");
+            }
+        })
+    });
 }

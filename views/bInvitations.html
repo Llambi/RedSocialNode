@@ -11,7 +11,7 @@
             <!-- http://www.socicon.com/generator.php -->
             <img src="/img/user.png" alt="user photo"/>
             <div class="wrap">Usuario: {{ invi.senderName }}</div>
-            <!-- <a href="/sendInvitation/{{ user.email }}">Agregar Amigo</a> -->
+            <a href="/acceptInvitation/{{ invi._id.toString() }}">Aceptar</a>
         </div>
     </div>
     {% endif %}
