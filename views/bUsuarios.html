@@ -20,16 +20,19 @@
 <p>{{usuario.name}}</p>
 <div class="row">
     <!-- http://librosweb.es/libro/bootstrap_3/capitulo_2/tipos_de_rejillas.html -->
-    <!-- Inicio del Bloque canción -->
-    {% for usuario in usuarios %}
+    <!-- Inicio del Bloque -->
+    {% for user in usuarios %}
+    {% if user.name != usuario.name && user.email != usuario.email %}
     <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
         <div style="width: 300px; padding: 20px">
             <!-- http://www.socicon.com/generator.php -->
             <img src="/img/user.png" alt="user photo"/>
-            <div class="wrap">Nombre: {{ usuario.name }}</div>
-            <div class="small">Email: {{ usuario.email }}</div>
+            <div class="wrap">Nombre: {{ user.name }}</div>
+            <div class="small">Email: {{ user.email }}</div>
+            <a href="/sendInvitation?email={{ user.email }}&nombre={{ user.name }}">Agregar Amigo</a>
         </div>
     </div>
+    {% endif %}
     {% endfor %}
     <!-- Fin del Bloque canción -->
 </div>
@@ -40,31 +43,31 @@
 
         <!-- Primera -->
         <li class="page-item">
-            <a class="page-link" href="/redSocial?pg=1">Primera</a>
+            <a class="page-link" href="/usuarios?pg=1">Primera</a>
         </li>
 
         <!-- Anterior (si la hay ) -->
         {% if pgActual-1 >= 1 %}
         <li class="page-item">
-            <a class="page-link" href="/redSocial?pg={{ pgActual -1 }}">{{ pgActual -1 }}</a>
+            <a class="page-link" href="/usuarios?pg={{ pgActual -1 }}">{{ pgActual -1 }}</a>
         </li>
         {% endif %}
 
         <!-- Actual -->
         <li class="page-item active">
-            <a class="page-link" href="/redSocial?pg={{ pgActual }}">{{ pgActual }}</a>
+            <a class="page-link" href="/usuarios?pg={{ pgActual }}">{{ pgActual }}</a>
         </li>
 
         <!-- Siguiente (si la hay) -->
         {% if pgActual+1 <= pgUltima %}
         <li class="page-item">
-            <a class="page-link" href="/redSocial?pg={{ pgActual+1 }}">{{ pgActual+1 }}</a>
+            <a class="page-link" href="/usuarios?pg={{ pgActual+1 }}">{{ pgActual+1 }}</a>
         </li>
         {% endif %}
 
         <!-- Última -->
         <li class="page-item">
-            <a class="page-link" href="/redSocial?pg={{ pgUltima }}">Última</a>
+            <a class="page-link" href="/usuarios?pg={{ pgUltima }}">Última</a>
         </li>
 
     </ul>
