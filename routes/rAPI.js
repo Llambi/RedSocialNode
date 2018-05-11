@@ -30,9 +30,9 @@ module.exports = function (app, gestorBD) {
     app.get("/api/usuarios", function (req, res) {
         var decoded = app.get("jwt").verify(req.headers['token'], 'secreto');
         var usuario = decoded.usuario;
-        var criterio ={
-            $and : [
-                { $or : [ { sender : usuario }, { receiver: usuario } ] },
+        var criterio = {
+            $and: [
+                {$or: [{sender: usuario}, {receiver: usuario}]},
                 {status: true}
             ]
         };
@@ -55,6 +55,66 @@ module.exports = function (app, gestorBD) {
                 }
                 amigos = JSON.stringify(usuarios);
                 res.send(amigos);
+            }
+        });
+    });
+
+    app.post("/api/mensaje", function (req, res) {
+        var decoded = app.get("jwt").verify(req.headers['token'], 'secreto');
+        var emisor = decoded.usuario;
+        var destino = req.body.destino;
+        var mensaje = req.body.texto;
+        if (req.body.emisor == null || destino == null || mensaje == null) {
+            res.status(400); // Faltan campos
+            res.json({
+                required: "emisor: email, destino: email y texto: message"
+            });
+            return;
+        }
+        if (emisor != req.body.emisor) {
+            res.status(401); // El token proporcionado no corresponde con los datos del emisor
+            res.json({
+                info: "Token y emisor no coinciden"
+            });
+            return;
+        }
+        var mensaje = {
+            emisor: emisor,
+            destino: destino,
+            mensaje: mensaje,
+            leido: false
+        };
+        var criterio = {
+            $and: [
+                {$or: [{sender: emisor}, {receiver: emisor}]},
+                {status: true}
+            ]
+        };
+        gestorBD.obtenerAmigos(criterio, function (amigos) {
+            if (amigos == null) {
+                res.status(500);
+                res.json({
+                    info: "Se ha producido un error"
+                })
+            } else {
+                for (var key in amigos) {
+                    if (amigos[key].sender == emisor && amigos[key].receiver == destino
+                        || amigos[key].receiver == emisor && amigos[key].sender == destino) {
+                        gestorBD.crearMensaje(mensaje, function (result) {
+                            if (result == null) {
+                                res.status(500);
+                                res.json({
+                                    info: "Se ha producido un error"
+                                });
+                            } else {
+                                res.status(200);
+                                res.json({
+                                    info: "Se ha creado el mensaje"
+                                });
+                            }
+                        });
+                    }
+                }
             }
         });
     });
