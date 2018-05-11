@@ -29,20 +29,14 @@ module.exports = function (app, gestorBD) {
 
     app.get("/api/usuarios", function (req, res) {
         var decoded = app.get("jwt").verify(req.headers['token'], 'secreto');
-        var usuario = decoded.email;
-        var criterio = {
-            $and: [
-                {
-                    $or: [
-                        {
-                            sender: usuario,
-                            reciver: usuario
-                        }
-                    ]
-                },
+        var usuario = decoded.usuario;
+        var criterio ={
+            $and : [
+                { $or : [ { sender : usuario }, { receiver: usuario } ] },
                 {status: true}
             ]
         };
+
         gestorBD.obtenerAmigos(criterio, function (amigos) {
             if (amigos == null) {
                 res.status(500);
@@ -54,9 +48,9 @@ module.exports = function (app, gestorBD) {
                 var usuarios = [];
                 for (var key in amigos) {
                     if (amigos[key].sender == usuario) {
-                        usuarios.push({email: "/usuario/"+amigos[key].reciver, name: amigos[key].reciverName});
+                        usuarios.push({email: "/usuario/" + amigos[key].reciver, name: amigos[key].reciverName});
                     } else {
-                        usuarios.push({email: "/usuario/"+amigos[key].sender, name: amigos[key].senderName});
+                        usuarios.push({email: "/usuario/" + amigos[key].sender, name: amigos[key].senderName});
                     }
                 }
                 amigos = JSON.stringify(usuarios);

@@ -41,6 +41,7 @@
         $("#tablaCuerpo").empty(); // Vaciar la tabla
         for (i = 0; i < amigosMostrar.length; i++) {
             $("#tablaCuerpo").append(
+                "<tr id=" + i + ">" +
                 "<td>" + amigosMostrar[i].name + "</td>" +
                 "<td>" + amigosMostrar[i].email.split("/")[1] + "</td>" +
                 "<td>" +
