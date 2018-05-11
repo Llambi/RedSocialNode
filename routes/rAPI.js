@@ -26,7 +26,6 @@ module.exports = function (app, gestorBD) {
 
         });
     });
-
     app.get("/api/usuarios", function (req, res) {
         var decoded = app.get("jwt").verify(req.headers['token'], 'secreto');
         var usuario = decoded.usuario;
@@ -58,7 +57,6 @@ module.exports = function (app, gestorBD) {
             }
         });
     });
-
     app.post("/api/mensaje", function (req, res) {
         var decoded = app.get("jwt").verify(req.headers['token'], 'secreto');
         var emisor = decoded.usuario;
@@ -115,6 +113,47 @@ module.exports = function (app, gestorBD) {
                         });
                     }
                 }
+            }
+        });
+    });
+    app.post("/api/mensajes", function (req, res) {
+        var decoded = app.get("jwt").verify(req.headers['token'], 'secreto');
+        var usuarioA = req.body.usuarioA;
+        var usuarioB = req.body.usuarioB;
+        if (usuarioA == null || usuarioB == null) {
+            res.status(400); // Faltan campos
+            res.json({
+                required: "usuarioA: email, usuarioB: email"
+            });
+            return;
+        }
+        if (usuarioA != decoded.usuario && usuarioB != decoded.usuario) {
+            res.status(401); // El token proporcionado no corresponde con los datos de los usuarios
+            res.json({
+                info: "Token no coincide con ninguno de los usuarios"
+            });
+            return;
+        }
+        var criterio = {
+            $or: [
+                {$and: [{emisor: usuarioA}, {destino: usuarioB}]},
+                {$and: [{emisor: usuarioB}, {destino: usuarioA}]}
+            ]
+        };
+        gestorBD.obtenerMensajes(criterio, function (mensajes) {
+            if (mensajes == null) {
+                res.status(500);
+                res.json({
+                    error: "se ha producido un error"
+                })
+            } else {
+                res.status(200);
+                var mostrar = [];
+                for (var key in mensajes) {
+                    mostrar.push({emisor: "/usuario/" + mensajes[key].receiver, name: amigos[key].receiverName});
+                }
+                mensajes = JSON.stringify(mostrar);
+                res.send(mensajes);
             }
         });
     });

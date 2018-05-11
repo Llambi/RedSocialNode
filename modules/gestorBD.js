@@ -216,4 +216,23 @@ module.exports = {
             }
         });
     },
+    obtenerMensajes: function (criterio, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get("db"), function (err, db) {
+            if (err) {
+                console.log("[ERROR]: Fallo en obtencion de mensajes.", err);
+                funcionCallback(null);
+            } else {
+                var collection = db.collection("mensajes");
+                collection.find(criterio).toArray(function (err, mensajes) {
+                    if (err) {
+                        console.log("[ERROR]: Fallo en obtencion de mensajes.", err);
+                        funcionCallback(null);
+                    } else {
+                        console.log("[INFO]: Obtencion de amigos.");
+                        funcionCallback(mensajes);
+                    }
+                })
+            }
+        })
+    },
 };
