@@ -48,7 +48,7 @@ module.exports = function (app, gestorBD) {
                 var usuarios = [];
                 for (var key in amigos) {
                     if (amigos[key].sender == usuario) {
-                        usuarios.push({email: "/usuario/" + amigos[key].reciver, name: amigos[key].reciverName});
+                        usuarios.push({email: "/usuario/" + amigos[key].receiver, name: amigos[key].receiverName});
                     } else {
                         usuarios.push({email: "/usuario/" + amigos[key].sender, name: amigos[key].senderName});
                     }
