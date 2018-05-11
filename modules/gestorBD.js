@@ -53,6 +53,23 @@ module.exports = {
             }
         });
     },
+    insertarUsuario: function (usuario, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                var collection = db.collection('usuarios');
+                collection.insertOne(usuario, function(err, result) {
+                    if (err) {
+                        funcionCallback(null);
+                    } else {
+                        funcionCallback(result.ops[0]._id);
+                    }
+                    db.close();
+                });
+            }
+        });
+    },
     obtenerUsuarios: function (criterio, funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
             if (err) {
@@ -166,7 +183,7 @@ module.exports = {
                 console.log("[ERROR]: Fallo en obtencion de amigos.", err);
                 funcionCallback(null);
             } else {
-                var collection = db.collection("amistad");
+                var collection = db.collection("amistades");
                 collection.find(criterio).toArray(function (err, amigos) {
                     if (err){
                         console.log("[ERROR]: Fallo en obtencion de amigos.", err);

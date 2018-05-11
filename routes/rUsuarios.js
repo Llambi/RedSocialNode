@@ -12,7 +12,7 @@ module.exports = function (app, swig, gestorBD) {
             ]
         }
         gestorBD.obtenerUsuarios(criterio, function (usuarios) {
-            if (req.body.password != req.body.rePassword) {
+            if (req.body.password != req.body.passwordConfirm) {
                 res.redirect("/signup?mensaje=Error al registrar usuario, las contraseñas no coinciden.&tipoError=pass");
             }
             else if (!(usuarios == null || usuarios == undefined || usuarios.length == 0)) {
