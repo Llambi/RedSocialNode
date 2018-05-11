@@ -1,7 +1,7 @@
 <div id="widget-canciones">
     <h2>Usuarios</h2>
     <input type="text" class="form-control" placeholder="Filtrar por nombre"
-           id="filtro-nombre"/>
+           id="filtro-nombre" name="busqueda"/>
     <table class="table table-hover">
         <thead>
         <tr>
@@ -82,7 +82,7 @@
         var nombreFiltro = $("#filtro-nombre").val();
 
         for (i = 0; i < amigos.length; i++) {
-            if (amigos[i].nombre.indexOf(nombreFiltro) != -1) {
+            if (amigos[i].name.indexOf(nombreFiltro) != -1) {
                 amigosFiltrados.push(amigos[i]);
             }
         }
