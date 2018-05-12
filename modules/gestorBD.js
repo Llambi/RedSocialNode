@@ -11,16 +11,23 @@ module.exports = {
                 funcionCallback(null);
             } else {
                 var collectionA = db.collection('amistades');
-                collectionA.deleteMany({}, function (err, result) {
+                collectionA.deleteMany({}, function (err, res) {
                     if (err) {
                         funcionCallback(null);
                     } else {
                         var collectionU = db.collection('usuarios');
-                        collectionU.deleteMany({}, function (err, result) {
+                        collectionU.deleteMany({}, function (err, resul) {
                             if (err) {
                                 funcionCallback(null);
                             } else {
-                                funcionCallback(result);
+                                var collectionM = db.collection('mensajes');
+                                collectionU.deleteMany({}, function (err, result) {
+                                    if (err) {
+                                        funcionCallback(null);
+                                    } else {
+                                        funcionCallback(result);
+                                    }
+                                });
                             }
                         });
                     }
@@ -116,20 +123,25 @@ module.exports = {
     sendInvitation: function (invitation, criterio, funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
             if (err) {
+                console.log("[ERROR]: Fallo en el envio de invitacion.", err);
                 funcionCallback("Error");
             } else {
                 var collection = db.collection('amistades');
                 collection.find(criterio).toArray(function (err, res) {
                     if (err) {
+                        console.log("[ERROR]: Fallo en el envio de invitacion.", err);
                         funcionCallback("Error");
                     } else {
                         if (res.length > 0) {
+                            console.log("[INFO]: Cancelacion de envio de invitacion.", err);
                             funcionCallback("Stop");
                         } else {
                             collection.insertOne(invitation, function (err, result) {
                                 if (err) {
+                                    console.log("[ERROR]: Fallo en el envio de invitacion.", err);
                                     funcionCallback("Error");
                                 } else {
+                                    console.log("[INFO]: Envio de invitacion.", err);
                                     funcionCallback("Created");
                                 }
                             })
@@ -142,6 +154,7 @@ module.exports = {
     getInvitationsListPg: function (criterio, pg, funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
             if (err) {
+                console.log("[ERROR]: Fallo en la obtencion de invitaciones.", err);
                 funcionCallback(null);
             } else {
                 var collection = db.collection('amistades');
@@ -149,8 +162,10 @@ module.exports = {
                     collection.find(criterio).skip((pg - 1) * 5).limit(5)
                         .toArray(function (err, res) {
                             if (err) {
+                                console.log("[ERROR]: Fallo en la obtencion de invitaciones.", err);
                                 funcionCallback(null);
                             } else {
+                                console.log("[INFO]: Obtencion de invitaciones.", err);
                                 funcionCallback(res, count);
                             }
                             db.close();
@@ -162,13 +177,16 @@ module.exports = {
     acceptInvitation: function (criterio, amistad, funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
             if (err) {
+                console.log("[ERROR]: Fallo en la aceptacion de invitacion.", err);
                 funcionCallback(null);
             } else {
                 var collection = db.collection('amistades');
-                collection.update(criterio, {$set: amistad}, function (err, result) {
+                collection.updateOne(criterio, {$set: amistad}, function (err, result) {
                     if (err) {
+                        console.log("[ERROR]: Fallo en la aceptacion de invitacion.", err);
                         funcionCallback(null);
                     } else {
+                        console.log("[INFO]: Aceptacion de invitacion.", err);
                         funcionCallback(result);
                     }
                     db.close();
@@ -176,7 +194,6 @@ module.exports = {
             }
         });
     },
-
     obtenerAmigos: function (criterio, funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get("db"), function (err, db) {
             if (err) {

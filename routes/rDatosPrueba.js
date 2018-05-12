@@ -98,7 +98,7 @@ module.exports = function (app, swig, gestorBD) {
                 receiverName: "Pelayo",
                 status: false
             },
-			{
+            {
                 sender: "rosa@hotmail.es",
                 senderName: "Rosa",
                 receiver: "jose@hotmail.es",
