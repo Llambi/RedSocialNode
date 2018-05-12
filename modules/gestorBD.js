@@ -54,12 +54,12 @@ module.exports = {
         });
     },
     insertarUsuario: function (usuario, funcionCallback) {
-        this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
             if (err) {
                 funcionCallback(null);
             } else {
                 var collection = db.collection('usuarios');
-                collection.insertOne(usuario, function(err, result) {
+                collection.insertOne(usuario, function (err, result) {
                     if (err) {
                         funcionCallback(null);
                     } else {
@@ -179,18 +179,57 @@ module.exports = {
 
     obtenerAmigos: function (criterio, funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get("db"), function (err, db) {
-            if (err){
+            if (err) {
                 console.log("[ERROR]: Fallo en obtencion de amigos.", err);
                 funcionCallback(null);
             } else {
                 var collection = db.collection("amistades");
                 collection.find(criterio).toArray(function (err, amigos) {
-                    if (err){
+                    if (err) {
                         console.log("[ERROR]: Fallo en obtencion de amigos.", err);
                         funcionCallback(null);
                     } else {
                         console.log("[INFO]: Obtencion de amigos.");
                         funcionCallback(amigos);
+                    }
+                })
+            }
+        })
+    },
+    crearMensaje: function (mensaje, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
+            if (err) {
+                console.log("[ERROR]: Fallo en creacion de mensaje.", err);
+                funcionCallback(null);
+            } else {
+                var collection = db.collection('mensajes');
+                collection.insertOne(mensaje, function (err, result) {
+                    if (err) {
+                        console.log("[ERROR]: Fallo en creacion de mensaje.", err);
+                        funcionCallback(null);
+                    } else {
+                        console.log("[INFO]: Creacion de mensaje.");
+                        funcionCallback(result);
+                    }
+                });
+
+            }
+        });
+    },
+    obtenerMensajes: function (criterio, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get("db"), function (err, db) {
+            if (err) {
+                console.log("[ERROR]: Fallo en obtencion de mensajes.", err);
+                funcionCallback(null);
+            } else {
+                var collection = db.collection("mensajes");
+                collection.find(criterio).toArray(function (err, mensajes) {
+                    if (err) {
+                        console.log("[ERROR]: Fallo en obtencion de mensajes.", err);
+                        funcionCallback(null);
+                    } else {
+                        console.log("[INFO]: Obtencion de amigos.");
+                        funcionCallback(mensajes);
                     }
                 })
             }
