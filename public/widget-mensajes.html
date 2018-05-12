@@ -1,0 +1,92 @@
+<div id="widget-mensajes">
+    <h2>Mensajes</h2>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Emisor</th>
+            <th>Destino</th>
+            <th>Texto</th>
+            <th class="col-md-1"></th>
+        </tr>
+        </thead>
+        <tbody id="tablaCuerpo">
+        </tbody>
+    </table>
+</div>
+
+<div id="widget-mensaje">
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="message">Nuevo mensaje:</label>
+        <div class="col-sm-10">
+            <input type="email" class="form-control" name="message"
+                   placeholder="Escriba aqui su nuevo mensaje ..." id="message"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button class="btn" type="button" id="boton-enviar" onclick="enviarMensaje()">Enviar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.history.pushState("", "", "/cliente.html?w=mensajes");
+    var listaMensajes;
+
+    function cargarMensajes() {
+        $.ajax({
+            url: URLbase + "/mensajes",
+            type: "POST",
+            data: {
+                usuarioA: emailUsuario,
+                usuarioB: emailAmigo
+            },
+            dataType: 'json',
+            headers: {
+                "token": token
+            },
+            success: function (respuesta) {
+                listaMensajes = respuesta;
+                actualizarTabla(listaMensajes);
+            },
+            error: function (error) {
+                $("#contenedor-principal").load("widget-login.html");
+            }
+        });
+    }
+
+    function enviarMensaje() {
+        $.ajax({
+            url: URLbase + "/mensaje",
+            type: "POST",
+            data: {
+                emisor: emailUsuario,
+                destino: emailAmigo,
+                texto: $("#message").val()
+            },
+            dataType: 'json',
+            headers: {
+                "token": token
+            },
+            success: function (respuesta) {
+                cargarMensajes();
+            },
+            error: function (error) {
+            }
+        });
+    }
+
+    function actualizarTabla(mensajesMostrar) {
+        $("#tablaCuerpo").empty(); // Vaciar la tabla
+        for (i = 0; i < mensajesMostrar.length; i++) {
+            $("#tablaCuerpo").append(
+                "<tr >" + "<td>" + mensajesMostrar[i].emisor.split("/")[2] + "</td>"
+                + "<td>" + mensajesMostrar[i].destino.split("/")[2] + "</td>"
+                + "<td><p>" + mensajesMostrar[i].texto + "</p></td>"
+                + "</tr>");
+        }
+    }
+
+    cargarMensajes();
+    setInterval(cargarMensajes, 5000);
+</script>

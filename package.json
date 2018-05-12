@@ -1,0 +1,30 @@
+{
+  "name": "redsocialnode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "crypto": "^1.0.1",
+    "express-session": "^1.15.6",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.2.1",
+    "mongodb": "^2.2.33",
+    "request": "^2.85.0",
+    "swig": "^1.4.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Llambi/RedSocialNode.git"
+  },
+  "author": "Hugo & Jose",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Llambi/RedSocialNode/issues"
+  },
+  "homepage": "https://github.com/Llambi/RedSocialNode#readme"
+}
