@@ -12,32 +12,44 @@ module.exports = {
                 funcionCallback(null);
             } else {
                 console.log("[INFO]: Borrado de datos #1: Hecho.");
-                var collectionM = db.collection('mensajes');
-                collectionM.deleteMany({}, function (error2, res) {
+                var collectionA = db.collection('amistades');
+                collectionA.deleteMany({}, function (error2, result2) {
                     if (error2) {
-                        console.log("[ERROR]: Fallo en borrado de datos #2: Mensajes.", error2);
+                        console.log("[ERROR]: Fallo en borrado de datos #2: Amistades.", error2);
                         funcionCallback(null);
                     } else {
                         console.log("[INFO]: Borrado de datos #2: Hecho.");
-                        var collectionA = db.collection('amistades');
-                        collectionA.deleteMany({}, function (error3, resul) {
+                        var collectionU = db.collection('usuarios');
+                        collectionU.deleteMany({}, function (error3, result3) {
                             if (error3) {
-                                console.log("[ERROR]: Fallo en borrado de datos #3: Amistades.", error3);
+                                console.log("[ERROR]: Fallo en borrado de datos #3: Usuarios.", error3);
                                 funcionCallback(null);
                             } else {
-                                console.log("[INFO]: Borrado de datos #3: Hecho.");
-                                var collectionU = db.collection('usuarios');
-                                collectionU.deleteMany({}, function (error4, result) {
-                                    if (error4) {
-                                        console.log("[ERROR]: Fallo en borrado de datos #4: Usuarios.", error4);
-                                        funcionCallback(null);
-                                    } else {
-                                        console.log("[INFO]: Borrado de datos.");
-                                        funcionCallback(result);
-                                    }
-                                });
+                                console.log("[INFO]: Borrado de datos: Amistades y Usuarios.");
+                                funcionCallback(result3);
                             }
                         });
+                    }
+                    db.close();
+                });
+            }
+        });
+    },
+    borrarMensajesBBDD: function (funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (error1, db) {
+            if (error1) {
+                console.log("[ERROR]: Fallo en borrado de datos #1.2.", error1);
+                funcionCallback(null);
+            } else {
+                console.log("[INFO]: Borrado de datos #3: Hecho.");
+                var collection = db.collection('mensajes');
+                collection.deleteMany({}, function (error2, result) {
+                    if (error2) {
+                        console.log("[ERROR]: Fallo en borrado de datos #4: Mensajes.", error2);
+                        funcionCallback(null);
+                    } else {
+                        console.log("[INFO]: Borrado de datos: Mensajes.");
+                        funcionCallback(result);
                     }
                     db.close();
                 });
@@ -59,7 +71,7 @@ module.exports = {
                         var collectionA = db.collection('amistades');
                         collectionA.insertMany(invitaciones, function (err, result) {
                             if (err) {
-                                console.log("[ERROR]: Fallo en relleno de datos #1: Amistades", err);
+                                console.log("[ERROR]: Fallo en relleno de datos #3: Amistades", err);
                                 funcionCallback(null);
                             } else {
                                 console.log("[INFO]: Relleno de datos.");
