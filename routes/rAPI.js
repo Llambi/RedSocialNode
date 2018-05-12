@@ -150,7 +150,11 @@ module.exports = function (app, gestorBD) {
                 res.status(200);
                 var mostrar = [];
                 for (var key in mensajes) {
-                    mostrar.push({emisor: "/usuario/" + mensajes[key].receiver, name: amigos[key].receiverName});
+                    mostrar.push({
+                        emisor: "/usuario/" + mensajes[key].emisor,
+                        destino: "/usuario/" + mensajes[key].destino,
+                        texto: mensajes[key].mensaje
+                    });
                 }
                 mensajes = JSON.stringify(mostrar);
                 res.send(mensajes);

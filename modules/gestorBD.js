@@ -6,25 +6,33 @@ module.exports = {
         this.app = app;
     },
     borrarBBDD: function (funcionCallback) {
-        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
-            if (err) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (error1, db) {
+            if (error1) {
+                console.log("[ERROR]: Fallo en borrado de datos #1.", error1);
                 funcionCallback(null);
             } else {
-                var collectionA = db.collection('amistades');
-                collectionA.deleteMany({}, function (err, res) {
-                    if (err) {
+                console.log("[INFO]: Borrado de datos #1: Hecho.");
+                var collectionM = db.collection('mensajes');
+                collectionM.deleteMany({}, function (error2, res) {
+                    if (error2) {
+                        console.log("[ERROR]: Fallo en borrado de datos #2: Mensajes.", error2);
                         funcionCallback(null);
                     } else {
-                        var collectionU = db.collection('usuarios');
-                        collectionU.deleteMany({}, function (err, resul) {
-                            if (err) {
+                        console.log("[INFO]: Borrado de datos #2: Hecho.");
+                        var collectionA = db.collection('amistades');
+                        collectionA.deleteMany({}, function (error3, resul) {
+                            if (error3) {
+                                console.log("[ERROR]: Fallo en borrado de datos #3: Amistades.", error3);
                                 funcionCallback(null);
                             } else {
-                                var collectionM = db.collection('mensajes');
-                                collectionU.deleteMany({}, function (err, result) {
-                                    if (err) {
+                                console.log("[INFO]: Borrado de datos #3: Hecho.");
+                                var collectionU = db.collection('usuarios');
+                                collectionU.deleteMany({}, function (error4, result) {
+                                    if (error4) {
+                                        console.log("[ERROR]: Fallo en borrado de datos #4: Usuarios.", error4);
                                         funcionCallback(null);
                                     } else {
+                                        console.log("[INFO]: Borrado de datos.");
                                         funcionCallback(result);
                                     }
                                 });
@@ -39,18 +47,22 @@ module.exports = {
     rellenarBBDD: function (usuarios, invitaciones, funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
             if (err) {
+                console.log("[ERROR]: Fallo en relleno de datos #1.", err);
                 funcionCallback(null);
             } else {
                 var collectionU = db.collection('usuarios');
                 collectionU.insertMany(usuarios, function (err, result) {
                     if (err) {
+                        console.log("[ERROR]: Fallo en relleno de datos #2: Usuarios.", err);
                         funcionCallback(null);
                     } else {
                         var collectionA = db.collection('amistades');
                         collectionA.insertMany(invitaciones, function (err, result) {
                             if (err) {
+                                console.log("[ERROR]: Fallo en relleno de datos #1: Amistades", err);
                                 funcionCallback(null);
                             } else {
+                                console.log("[INFO]: Relleno de datos.");
                                 funcionCallback(result);
                             }
                         });
@@ -245,7 +257,7 @@ module.exports = {
                         console.log("[ERROR]: Fallo en obtencion de mensajes.", err);
                         funcionCallback(null);
                     } else {
-                        console.log("[INFO]: Obtencion de amigos.");
+                        console.log("[INFO]: Obtencion de mensajes.");
                         funcionCallback(mensajes);
                     }
                 })
