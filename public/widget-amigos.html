@@ -45,10 +45,15 @@
                 "<td>" + amigosMostrar[i].name + "</td>" +
                 "<td>" + amigosMostrar[i].email.split("/")[1] + "</td>" +
                 "<td>" +
-                "<p> Aqui irá algo</p>" +
+                "<a id='mensajes' onclick=cargarMensajes('" + amigosMostrar[i].email.split("/")[2] + "')>Conversacion</a>" +
                 "</td>" +
                 "</tr>");
         }
+    }
+
+    function cargarMensajes(email) {
+        emailAmigo = email;
+        $("#contenedor-principal").load("widget-mensajes.html");
     }
 
     function eliminar(_id) {
