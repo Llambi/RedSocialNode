@@ -29,7 +29,7 @@
             <img src="/img/user.png" alt="user photo"/>
             <div class="wrap">Nombre: {{ user.name }}</div>
             <div class="small">Email: {{ user.email }}</div>
-            <a href="/sendInvitation?email={{ user.email }}&nombre={{ user.name }}">Agregar Amigo</a>
+            <a id="{{ user.name }}" href="/sendInvitation?email={{ user.email }}&nombre={{ user.name }}">Agregar Amigo</a>
         </div>
     </div>
     {% endif %}

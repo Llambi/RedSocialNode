@@ -45,7 +45,8 @@
                 "<td>" + amigosMostrar[i].name + "</td>" +
                 "<td>" + amigosMostrar[i].email.split("/")[1] + "</td>" +
                 "<td>" +
-                "<a id='mensajes' onclick=cargarMensajes('" + amigosMostrar[i].email.split("/")[2] + "')>Conversacion</a>" +
+                "<a id='conversacion-" + amigosMostrar[i].email.split("/")[2] + "' onclick=cargarMensajes('"
+                + amigosMostrar[i].email.split("/")[2] + "')>Conversacion</a>" +
                 "</td>" +
                 "</tr>");
         }
