@@ -24,6 +24,7 @@
     window.history.pushState("", "", "/cliente.html?w=login");
 
     $("#boton-login").click(function () {
+        emailUsuario = $("#email").val();
         $.ajax({
             url: URLbase + "/autenticar",
             type: "POST",

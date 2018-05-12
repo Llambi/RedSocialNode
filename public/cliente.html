@@ -40,6 +40,8 @@
 
 <script>
     var token;
+    var emailUsuario;
+    var emailAmigo;
     var URLbase = "http://localhost:8081/api";
     $("#contenedor-principal").load("widget-login.html");
 
@@ -55,7 +57,7 @@
                 $("#contenedor-principal").load("widget-amigos.html");
                 break;
             default:
-                $("#contenedor-principal").load("widget-amigos.html");
+                $("#contenedor-principal").load("widget-login.html");
         }
 
     }
