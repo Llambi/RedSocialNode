@@ -3,7 +3,7 @@ var express = require('express');
 var app = express();
 
 // ZONA API ---------------------------
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Credentials", "true");
     res.header("Access-Control-Allow-Methods", "POST, GET, DELETE, UPDATE, PUT");
@@ -13,10 +13,10 @@ app.use(function(req, res, next) {
 });
 
 var rest = require('request');
-app.set('rest',rest);
+app.set('rest', rest);
 
 var jwt = require('jsonwebtoken');
-app.set('jwt',jwt);
+app.set('jwt', jwt);
 // ------------------------------------
 
 //ZONA Require-------------------------
@@ -47,7 +47,7 @@ app.use(expressSession({
 
 //routerUsuarioSession
 var routerUsuarioSession = express.Router();
-routerUsuarioSession.use(function(req, res, next) {
+routerUsuarioSession.use(function (req, res, next) {
     // console.log("routerUsuarioSession");
     if (req.session.usuario) {
         // dejamos correr la petición
@@ -64,16 +64,16 @@ app.use("/friends", routerUsuarioSession);
 
 //routerUsuarioToken
 var routerUsuarioToken = express.Router();
-routerUsuarioToken.use(function(req, res, next) {
+routerUsuarioToken.use(function (req, res, next) {
     // obtener el token, puede ser un parámetro GET , POST o HEADER
     var token = req.headers['token'];
     if (token != null) {
         // verificar el token
-        jwt.verify(token, 'secreto', function(err, infoToken) {
-            if (err || (Date.now()/1000 - infoToken.tiempo) > 24000 ){
+        jwt.verify(token, 'secreto', function (err, infoToken) {
+            if (err || (Date.now() / 1000 - infoToken.tiempo) > 24000) {
                 res.status(403); // Forbidden
                 res.json({
-                    acceso : false,
+                    acceso: false,
                     error: 'Token invalido o caducado'
                 });
                 // También podríamos comprobar que intoToken.usuario existe
@@ -89,14 +89,15 @@ routerUsuarioToken.use(function(req, res, next) {
     } else {
         res.status(403); // Forbidden
         res.json({
-            acceso : false,
+            acceso: false,
             mensaje: 'No hay Token'
         });
     }
 });
 //Aplicar routerUsuarioToken
 app.use('/api/usuarios', routerUsuarioToken);
-
+app.use('/api/mensaje', routerUsuarioToken);
+app.use('/api/mensajes', routerUsuarioToken);
 //-------------------------------------
 
 
@@ -112,7 +113,6 @@ app.set("crypto", crypto);
 
 require("./routes/rUsuarios.js")(app, swig, gestorBD);
 require("./routes/rInvitaciones.js")(app, swig, gestorBD);
-require("./routes/rPublicaciones.js")(app, swig, gestorBD);
 require("./routes/rDatosPrueba.js")(app, swig, gestorBD);
 require("./routes/rAPI.js")(app, gestorBD);
 

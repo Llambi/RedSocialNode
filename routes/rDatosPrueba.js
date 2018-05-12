@@ -4,7 +4,13 @@ module.exports = function (app, swig, gestorBD) {
             if (resultado == null) {
                 res.redirect("/?mensaje=Fatal Error: borrar base datos&tipoMensaje=alert-danger");
             } else {
-                res.redirect("/?mensaje=Base de datos vaciada&tipoMensaje=alert-info");
+                gestorBD.borrarMensajesBBDD(function (resultado) {
+                    if (resultado == null) {
+                        res.redirect("/?mensaje=Fatal Error: borrar mensajes base datos&tipoMensaje=alert-danger");
+                    } else {
+                        res.redirect("/?mensaje=Base de datos vaciada&tipoMensaje=alert-info");
+                    }
+                });
             }
         });
     });
@@ -98,7 +104,7 @@ module.exports = function (app, swig, gestorBD) {
                 receiverName: "Pelayo",
                 status: false
             },
-			{
+            {
                 sender: "rosa@hotmail.es",
                 senderName: "Rosa",
                 receiver: "jose@hotmail.es",

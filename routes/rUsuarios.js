@@ -56,7 +56,7 @@ module.exports = function (app, swig, gestorBD) {
                     "&tipoMensaje=alert-danger ");
 
             } else {
-                req.session.usuario = {name:usuarios[0].name, email:usuarios[0].email};
+                req.session.usuario = {name: usuarios[0].name, email: usuarios[0].email};
                 res.redirect("/usuarios");
             }
         });
@@ -70,36 +70,36 @@ module.exports = function (app, swig, gestorBD) {
     });
 
     app.get("/usuarios", function (req, res) {
-        var busqueda = req.query.busqueda==null||req.query.busqueda==undefined?"":req.query.busqueda;
-        var criterio = {
-            $or: [
-                {
-                    name: {$regex: ".*" + busqueda + ".*"},
+            var busqueda = req.query.busqueda == null || req.query.busqueda == undefined ? "" : req.query.busqueda;
+            var criterio = {
+                $or: [
+                    {
+                        name: {$regex: ".*" + busqueda + ".*"},
 
-                    email: {$regex: ".*" + busqueda + ".*"}
-                }
-            ]
-        };
-        var pg = parseInt(req.query.pg); // Es String !!!
-        if (req.query.pg == null) { // Puede no venir el param
-            pg = 1;
-        }
-        gestorBD.obtenerUsuariosPg(criterio, pg, function (usuarios, total) {
-            if (usuarios == null) {
-                res.send("Error al listar ");
-            } else {
-
-                var pgUltima = Math.ceil(total / 5);
-                var respuesta = swig.renderFile('views/bUsuarios.html', {
-                    usuario: req.session.usuario,
-                    usuarios: usuarios,
-                    pgActual: pg,
-                    pgUltima: pgUltima
-                });
-                res.send(respuesta);
+                        email: {$regex: ".*" + busqueda + ".*"}
+                    }
+                ]
+            };
+            var pg = parseInt(req.query.pg); // Es String !!!
+            if (req.query.pg == null) { // Puede no venir el param
+                pg = 1;
             }
-        });
-    }
+            gestorBD.obtenerUsuariosPg(criterio, pg, function (usuarios, total) {
+                if (usuarios == null) {
+                    res.send("Error al listar ");
+                } else {
+
+                    var pgUltima = Math.ceil(total / 5);
+                    var respuesta = swig.renderFile('views/bUsuarios.html', {
+                        usuario: req.session.usuario,
+                        usuarios: usuarios,
+                        pgActual: pg,
+                        pgUltima: pgUltima
+                    });
+                    res.send(respuesta);
+                }
+            });
+        }
     );
 
 
